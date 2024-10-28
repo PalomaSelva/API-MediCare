@@ -18,5 +18,5 @@ model Paciente {
   nome      String?
   sobrenome String?
   email     String  @unique()
-  password  String
+  senha     String
 }
