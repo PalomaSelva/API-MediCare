@@ -1,0 +1,9 @@
+services:
+  api-medicare:
+    image: bitnami/postgresql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRESQL_USERNAME=dev-medicare
+      - POSTGRESQL_PASSWORD=2024medicare2003
+      - POSTGRESQL_DATABASE=apimedicare
