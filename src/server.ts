@@ -6,4 +6,6 @@ app
     host: "0.0.0.0",
     port: env.PORT,
   })
-  .then(() => console.log("server is running on http://localhost:3333/"));
+  .then(() =>
+    console.log(`server is running on http://localhost:${env.PORT}/`)
+  );
