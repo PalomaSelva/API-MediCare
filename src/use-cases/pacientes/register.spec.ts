@@ -32,13 +32,13 @@ describe("Register Use Case", () => {
   it("Não deve ser possível cadastrar múltiplas contas com o mesmo e-mail", async () => {
     const pacientesRepository = new InMemoryPacientsRepository();
     const registerUseCase = new RegisterUseCase(pacientesRepository);
-    const email = "teste@example.com";
+
     await registerUseCase.execute({
       email: "teste@example.com",
       senha: "12345",
     });
 
-    expect(() => {
+    await expect(() => {
       return registerUseCase.execute({
         email: "teste@example.com",
         senha: "12345",
