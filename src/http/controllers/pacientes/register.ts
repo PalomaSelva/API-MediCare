@@ -1,4 +1,4 @@
-import { PrismaPacientesRepository } from "@/repositories/prisma/prisma-pacientes-repository";
+import { PrismaUsersRepository } from "@/repositories/prisma/prisma-users-repository";
 import { UserAlreadyExistsError } from "@/use-cases/errors/user-already-exists";
 import { RegisterUseCase } from "@/use-cases/pacientes/register";
 import { FastifyReply, FastifyRequest } from "fastify";
@@ -22,15 +22,16 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       .refine((password) => /[!@#$%^&*]/.test(password), {
         message: "A senha deve conter caracteres especiais.",
       }),
+    perfil: z.number(),
   });
 
-  const { email, senha } = registerBodySchema.parse(request.body);
+  const { email, senha, perfil } = registerBodySchema.parse(request.body);
 
   try {
-    const prismaPacientesRepository = new PrismaPacientesRepository();
+    const prismaPacientesRepository = new PrismaUsersRepository();
     const registerUseCase = new RegisterUseCase(prismaPacientesRepository);
 
-    await registerUseCase.execute({ email, senha });
+    await registerUseCase.execute({ email, senha, perfil });
   } catch (error) {
     if (error instanceof UserAlreadyExistsError) {
       return reply.status(409).send({ message: error.message });

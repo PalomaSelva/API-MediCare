@@ -1,47 +1,51 @@
 import { beforeAll, describe, expect, it, test } from "vitest";
 import { RegisterUseCase } from "./register";
 import { compare, hash } from "bcryptjs";
-import { InMemoryPacientsRepository } from "@/repositories/in-memory/in-memory-pacientes-repository";
 import { UserAlreadyExistsError } from "../errors/user-already-exists";
+import { InMemoryUsersRepository } from "@/repositories/in-memory/in-memory-users-repository";
 
 describe("Register Use Case", () => {
-  it("Deve ser possível cadastrar um paciente.", async () => {
-    const pacientesRepository = new InMemoryPacientsRepository();
-    const registerUseCase = new RegisterUseCase(pacientesRepository);
-    const { paciente } = await registerUseCase.execute({
+  it("Deve ser possível cadastrar um user.", async () => {
+    const usersRepository = new InMemoryUsersRepository();
+    const registerUseCase = new RegisterUseCase(usersRepository);
+    const { user } = await registerUseCase.execute({
       email: "teste@example.com",
       senha: "12345",
+      perfil: 1,
     });
 
-    expect(paciente.id).toEqual(expect.any(String));
+    expect(user.id).toEqual(expect.any(String));
   });
 
   it("Deve ser possível criptografas a senha assim que o usuário se cadastrar.", async () => {
-    const pacientesRepository = new InMemoryPacientsRepository();
-    const registerUseCase = new RegisterUseCase(pacientesRepository);
-    const { paciente } = await registerUseCase.execute({
+    const usersRepository = new InMemoryUsersRepository();
+    const registerUseCase = new RegisterUseCase(usersRepository);
+    const { user } = await registerUseCase.execute({
       email: "teste@example.com",
       senha: "12345",
+      perfil: 1,
     });
-    const isPasswordCorrectlyHashed = await compare("12345", paciente.senha);
+    const isPasswordCorrectlyHashed = await compare("12345", user.senha);
     expect(isPasswordCorrectlyHashed).toBe(true);
-    console.log(paciente.senha);
+    console.log(user.senha);
     console.log(isPasswordCorrectlyHashed);
   });
 
   it("Não deve ser possível cadastrar múltiplas contas com o mesmo e-mail", async () => {
-    const pacientesRepository = new InMemoryPacientsRepository();
-    const registerUseCase = new RegisterUseCase(pacientesRepository);
+    const usersRepository = new InMemoryUsersRepository();
+    const registerUseCase = new RegisterUseCase(usersRepository);
 
     await registerUseCase.execute({
       email: "teste@example.com",
       senha: "12345",
+      perfil: 1,
     });
 
     await expect(() => {
       return registerUseCase.execute({
         email: "teste@example.com",
         senha: "12345",
+        perfil: 1,
       });
     }).rejects.toBeInstanceOf(UserAlreadyExistsError);
   });

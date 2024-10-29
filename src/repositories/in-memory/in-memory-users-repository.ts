@@ -1,16 +1,17 @@
 import { prisma } from "@/lib/prisma";
-import { Paciente, Prisma } from "@prisma/client";
-import { PacientesRepository } from "../pacientesRepository";
+import { Prisma, User } from "@prisma/client";
+import { UsersRepository } from "../usersRepository";
 
-export class InMemoryPacientsRepository implements PacientesRepository {
-  public items: Paciente[] = [];
-  async create(data: Prisma.PacienteCreateInput) {
+export class InMemoryUsersRepository implements UsersRepository {
+  public items: User[] = [];
+  async create(data: Prisma.UserUncheckedCreateInput) {
     const paciente = {
       id: "user-1",
       nome: data.nome ?? "",
       sobrenome: data.sobrenome ?? "",
       email: data.email,
       senha: data.senha,
+      profileId: data.profileId,
     };
     this.items.push(paciente);
     return paciente;
