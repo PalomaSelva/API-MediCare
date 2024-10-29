@@ -5,7 +5,18 @@ import { InMemoryPacientsRepository } from "@/repositories/in-memory/in-memory-p
 import { UserAlreadyExistsError } from "../errors/user-already-exists";
 
 describe("Register Use Case", () => {
-  it("A senha do usuário deve ser criptografada assim que ele se cadastrar.", async () => {
+  it("Deve ser possível cadastrar um paciente.", async () => {
+    const pacientesRepository = new InMemoryPacientsRepository();
+    const registerUseCase = new RegisterUseCase(pacientesRepository);
+    const { paciente } = await registerUseCase.execute({
+      email: "teste@example.com",
+      senha: "12345",
+    });
+
+    expect(paciente.id).toEqual(expect.any(String));
+  });
+
+  it("Deve ser possível criptografas a senha assim que o usuário se cadastrar.", async () => {
     const pacientesRepository = new InMemoryPacientsRepository();
     const registerUseCase = new RegisterUseCase(pacientesRepository);
     const { paciente } = await registerUseCase.execute({
