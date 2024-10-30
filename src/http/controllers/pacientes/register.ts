@@ -28,8 +28,8 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
   const registerDoctorBodySchema = registerBodySchema.extend({
     nome: z.string({ message: "Nome é obrigatório" }),
     sobrenome: z.string({ message: "Sobrenome é obrigatório" }),
-    telefone:z.string({message:"Telefone é obrigatório"})
-    especialidade:z.coerce.number()
+    telefone: z.string({ message: "Telefone é obrigatório" }),
+    especialidade: z.coerce.number(),
   });
 
   const { email, senha, perfil_id } = registerBodySchema.parse(request.body);

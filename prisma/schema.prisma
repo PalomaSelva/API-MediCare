@@ -14,14 +14,16 @@ datasource db {
 }
 
 model User {
-  id        String  @id @default(uuid())
-  nome      String?
-  sobrenome String?
-  email     String  @unique()
-  senha     String
-
-  perfil    Perfil @relation(fields: [perfil_id], references: [id])
-  perfil_id Int
+  id               String        @id @default(uuid())
+  nome             String?
+  sobrenome        String?
+  email            String        @unique()
+  senha            String
+  telefone         String
+  especialidade    Especialidade @relation(fields: [especialidade_id], references: [id])
+  perfil           Perfil        @relation(fields: [perfil_id], references: [id])
+  perfil_id        Int
+  especialidade_id Int
 }
 
 model Perfil {
@@ -33,6 +35,7 @@ model Perfil {
 model Especialidade {
   id        Int    @id @default(autoincrement())
   descricao String
+  User      User[]
 }
 
 // perfis
