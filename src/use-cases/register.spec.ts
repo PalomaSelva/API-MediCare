@@ -1,8 +1,8 @@
 import { beforeAll, describe, expect, it, test } from "vitest";
 import { RegisterUseCase } from "./register";
 import { compare, hash } from "bcryptjs";
-import { UserAlreadyExistsError } from "../errors/user-already-exists";
 import { InMemoryUsersRepository } from "@/repositories/in-memory/in-memory-users-repository";
+import { UserAlreadyExistsError } from "./errors/user-already-exists";
 
 describe("Register Use Case", () => {
   it("Deve ser possível cadastrar um user.", async () => {
@@ -11,7 +11,7 @@ describe("Register Use Case", () => {
     const { user } = await registerUseCase.execute({
       email: "teste@example.com",
       senha: "12345",
-      perfil: 1,
+      perfil_id: 1,
     });
 
     expect(user.id).toEqual(expect.any(String));
@@ -23,7 +23,7 @@ describe("Register Use Case", () => {
     const { user } = await registerUseCase.execute({
       email: "teste@example.com",
       senha: "12345",
-      perfil: 1,
+      perfil_id: 1,
     });
     const isPasswordCorrectlyHashed = await compare("12345", user.senha);
     expect(isPasswordCorrectlyHashed).toBe(true);
@@ -38,14 +38,14 @@ describe("Register Use Case", () => {
     await registerUseCase.execute({
       email: "teste@example.com",
       senha: "12345",
-      perfil: 1,
+      perfil_id: 1,
     });
 
     await expect(() => {
       return registerUseCase.execute({
         email: "teste@example.com",
         senha: "12345",
-        perfil: 1,
+        perfil_id: 1,
       });
     }).rejects.toBeInstanceOf(UserAlreadyExistsError);
   });
