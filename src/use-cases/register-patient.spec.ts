@@ -1,13 +1,14 @@
 import { beforeAll, describe, expect, it, test } from "vitest";
-import { RegisterUseCase } from "./register";
+
 import { compare, hash } from "bcryptjs";
 import { InMemoryUsersRepository } from "@/repositories/in-memory/in-memory-users-repository";
 import { UserAlreadyExistsError } from "./errors/user-already-exists";
+import { RegisterPatientUseCase } from "./register-patient";
 
 describe("Register Use Case", () => {
   it("Deve ser possível cadastrar um user.", async () => {
     const usersRepository = new InMemoryUsersRepository();
-    const registerUseCase = new RegisterUseCase(usersRepository);
+    const registerUseCase = new RegisterPatientUseCase(usersRepository);
     const { user } = await registerUseCase.execute({
       email: "teste@example.com",
       senha: "12345",
@@ -19,7 +20,7 @@ describe("Register Use Case", () => {
 
   it("Deve ser possível criptografas a senha assim que o usuário se cadastrar.", async () => {
     const usersRepository = new InMemoryUsersRepository();
-    const registerUseCase = new RegisterUseCase(usersRepository);
+    const registerUseCase = new RegisterPatientUseCase(usersRepository);
     const { user } = await registerUseCase.execute({
       email: "teste@example.com",
       senha: "12345",
@@ -33,7 +34,7 @@ describe("Register Use Case", () => {
 
   it("Não deve ser possível cadastrar múltiplas contas com o mesmo e-mail", async () => {
     const usersRepository = new InMemoryUsersRepository();
-    const registerUseCase = new RegisterUseCase(usersRepository);
+    const registerUseCase = new RegisterPatientUseCase(usersRepository);
 
     await registerUseCase.execute({
       email: "teste@example.com",

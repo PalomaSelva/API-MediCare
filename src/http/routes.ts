@@ -1,6 +1,6 @@
 import { app } from "@/app";
-import { register } from "./controllers/register";
+import { registerPatient } from "./controllers/register-patient";
 
 export async function appRoutes() {
-  app.post("/user", register);
+  app.post("/user", registerPatient);
 }
