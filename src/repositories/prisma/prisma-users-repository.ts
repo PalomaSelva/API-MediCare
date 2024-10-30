@@ -8,7 +8,7 @@ export class PrismaUsersRepository implements UsersRepository {
       data: {
         email: data.email,
         senha: data.senha,
-        profileId: data.profileId,
+        perfil_id: data.perfil_id,
       },
     });
 

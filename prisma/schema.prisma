@@ -20,14 +20,19 @@ model User {
   email     String  @unique()
   senha     String
 
-  perfil    Profile @relation(fields: [profileId], references: [id])
-  profileId Int
+  perfil    Perfil @relation(fields: [perfil_id], references: [id])
+  perfil_id Int
 }
 
-model Profile {
-  id          Int    @id @default(autoincrement())
-  Description String
-  User        User[]
+model Perfil {
+  id        Int    @id @default(autoincrement())
+  descricao String
+  User      User[]
+}
+
+model Especialidade {
+  id        Int    @id @default(autoincrement())
+  descricao String
 }
 
 // perfis

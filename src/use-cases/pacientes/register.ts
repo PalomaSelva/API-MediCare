@@ -6,7 +6,7 @@ import { UsersRepository } from "@/repositories/usersRepository";
 export interface RegisterUseCaseRequest {
   email: string;
   senha: string;
-  perfil: number;
+  perfil_id: number;
 }
 
 interface RegisterUseCaseResponse {
@@ -19,7 +19,7 @@ export class RegisterUseCase {
   async execute({
     email,
     senha,
-    perfil,
+    perfil_id,
   }: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
     const password_hash = await hash(senha, 6);
 
@@ -32,7 +32,7 @@ export class RegisterUseCase {
     const user = await this.usersRepository.create({
       email,
       senha: password_hash,
-      profileId: perfil,
+      perfil_id: perfil_id,
     });
 
     return { user };

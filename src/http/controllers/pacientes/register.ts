@@ -22,16 +22,23 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       .refine((password) => /[!@#$%^&*]/.test(password), {
         message: "A senha deve conter caracteres especiais.",
       }),
-    perfil: z.number(),
+    perfil_id: z.number(),
   });
 
-  const { email, senha, perfil } = registerBodySchema.parse(request.body);
+  const registerDoctorBodySchema = registerBodySchema.extend({
+    nome: z.string({ message: "Nome é obrigatório" }),
+    sobrenome: z.string({ message: "Sobrenome é obrigatório" }),
+    telefone:z.string({message:"Telefone é obrigatório"})
+    especialidade:z.coerce.number()
+  });
+
+  const { email, senha, perfil_id } = registerBodySchema.parse(request.body);
 
   try {
     const prismaPacientesRepository = new PrismaUsersRepository();
     const registerUseCase = new RegisterUseCase(prismaPacientesRepository);
 
-    await registerUseCase.execute({ email, senha, perfil });
+    await registerUseCase.execute({ email, senha, perfil_id });
   } catch (error) {
     if (error instanceof UserAlreadyExistsError) {
       return reply.status(409).send({ message: error.message });

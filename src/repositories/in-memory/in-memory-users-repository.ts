@@ -11,7 +11,7 @@ export class InMemoryUsersRepository implements UsersRepository {
       sobrenome: data.sobrenome ?? "",
       email: data.email,
       senha: data.senha,
-      profileId: data.profileId,
+      perfil_id: data.perfil_id,
     };
     this.items.push(paciente);
     return paciente;
