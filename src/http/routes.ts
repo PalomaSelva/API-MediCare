@@ -2,5 +2,5 @@ import { app } from "@/app";
 import { register } from "./controllers/register";
 
 export async function appRoutes() {
-  app.post("/pacientes", register);
+  app.post("/user", register);
 }
