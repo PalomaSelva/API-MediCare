@@ -1,4 +1,6 @@
+import { prisma } from "@/lib/prisma";
 import { UsersRepository } from "@/repositories/usersRepository";
+import { compare } from "bcryptjs";
 
 interface AuthenticateUseCaseRequest {
   email: string;
@@ -13,6 +15,15 @@ export class AuthenticateUseCase {
     email,
     senha,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    return;
+    //  buscar o usuário no banco pelo e-mail
+    // comparar se a senha salva no banco bate com a senha do param
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (!user) {
+      throw new Error("Esse e-mail não está cadastrado na plataforma");
+    }
+    const isPasswordCorrectlyHashed = await compare(user.senha, senha);
+    console.log(isPasswordCorrectlyHashed);
   }
 }
