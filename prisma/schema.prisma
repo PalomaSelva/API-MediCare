@@ -14,33 +14,150 @@ datasource db {
 }
 
 model User {
-  id        String  @id @default(uuid())
-  email     String  @unique()
-  senha     String
-  nome      String?
-  sobrenome String?
-  telefone  String?
+  id           Int         @id @default(autoincrement())
+  name         String?
+  email        String      @unique
+  password     String
+  phone        String?
+  profile_pic  String?
+  profile_type ProfileType // Defines the type of user (doctor, clinic, patient)
 
-  especialidade Especialidade? @relation(fields: [especialidade_id], references: [id])
-  perfil        Perfil         @relation(fields: [perfil_id], references: [id])
-
-  perfil_id        Int
-  especialidade_id Int?
+  // Specific relationships for each type of user
+  doctor      Doctor?
+  clinic      Clinic?
+  patient     Patient?
+  SocialMedia SocialMedia[]
 }
 
-model Perfil {
+model Doctor {
+  id                  Int               @id @default(autoincrement())
+  registration_number String
+  photo_01            String?
+  photo_02            String?
+  photo_03            String?
+  video               String?
+  about_me            String?
+  // Relationship with User
+  user                User              @relation(fields: [user_id], references: [id])
+  user_id             Int               @unique
+  Clinics             DoctorClinic[]
+  Specialties         SpecialtyDoctor[]
+  Education           Education[]
+  Experience          Experience[]
+  DoctorPlan          DoctorPlan[]
+}
+
+model Clinic {
+  id       Int    @id @default(autoincrement())
+  name     String
+  cnpj     String
+  address  String
+  admin_id Int? // Refers to the administrator user of the clinic
+
+  // Relationship with User
+  user    User           @relation(fields: [user_id], references: [id])
+  user_id Int            @unique
+  Doctors DoctorClinic[]
+}
+
+model Patient {
+  id Int @id @default(autoincrement())
+
+  // Relationship with User
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int  @unique
+}
+
+model Specialty {
+  id       Int               @id @default(autoincrement())
+  name     String            @unique
+  Doctors  SpecialtyDoctor[]
+  Diseases Disease[]
+}
+
+model SocialMedia {
+  id       Int             @id @default(autoincrement())
+  platform SocialMediaType
+  url      String
+  user     User            @relation(fields: [user_id], references: [id])
+  user_id  Int
+}
+
+model Disease {
+  id           Int       @id @default(autoincrement())
+  name         String    @unique
+  description  String?
+  specialty    Specialty @relation(fields: [specialty_id], references: [id])
+  specialty_id Int
+}
+
+model Education {
+  id          Int    @id @default(autoincrement())
+  name        String
+  institution String
+
+  // Relationship with Doctor
+  doctor    Doctor @relation(fields: [doctor_id], references: [id])
+  doctor_id Int
+}
+
+model Experience {
+  id          Int    @id @default(autoincrement())
+  name        String
+  institution String
+
+  // Relationship with Doctor
+  doctor    Doctor @relation(fields: [doctor_id], references: [id])
+  doctor_id Int
+}
+
+model Plan {
+  id         Int          @id @default(autoincrement())
+  name       String       @unique
+  DoctorPlan DoctorPlan[]
+}
+
+model DoctorPlan {
   id        Int    @id @default(autoincrement())
-  descricao String
-  User      User[]
+  doctor    Doctor @relation(fields: [doctor_id], references: [id])
+  doctor_id Int
+  plan      Plan   @relation(fields: [plan_id], references: [id])
+  plan_id   Int
 }
 
-model Especialidade {
+// Association table to relate doctors and clinics (many to many)
+model DoctorClinic {
   id        Int    @id @default(autoincrement())
-  descricao String
-  User      User[]
+  doctor    Doctor @relation(fields: [doctor_id], references: [id])
+  doctor_id Int
+  clinic    Clinic @relation(fields: [clinic_id], references: [id])
+  clinic_id Int
+
+  @@unique([doctor_id, clinic_id]) // Ensures that the same association does not occur twice
 }
 
-// perfis
-// 1 -> Paciente
-// 2 -> Médicos
-// 3 -> Clínicas
+model SpecialtyDoctor {
+  specialty    Specialty @relation(fields: [specialty_id], references: [id])
+  specialty_id Int
+
+  doctor    Doctor @relation(fields: [doctor_id], references: [id])
+  doctor_id Int
+
+  @@id([doctor_id, specialty_id]) // Ensures that the same association does not occur twice
+}
+
+// Enum for user type
+enum ProfileType {
+  doctor
+  clinic
+  patient
+  clinicAdmin
+}
+
+enum SocialMediaType {
+  whatsapp
+  facebook
+  linkedin
+  youtube
+  twitter
+}

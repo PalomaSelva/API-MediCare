@@ -1,3 +1,4 @@
+import { PrismaPatientsRepository } from "@/repositories/prisma/prisma-patients-repository";
 import { PrismaUsersRepository } from "@/repositories/prisma/prisma-users-repository";
 import { UserAlreadyExistsError } from "@/use-cases/errors/user-already-exists";
 import { RegisterPatientUseCase } from "@/use-cases/register-patient";
@@ -11,7 +12,7 @@ export async function registerPatient(
 ) {
   const registerBodySchema = z.object({
     email: z.string().email(),
-    senha: z
+    password: z
       .string()
       .min(8, { message: "A senha deve conter, no mínimo, 8 caracteres." })
       .refine((password) => /[A-Z]/.test(password), {
@@ -26,25 +27,20 @@ export async function registerPatient(
       .refine((password) => /[!@#$%^&*]/.test(password), {
         message: "A senha deve conter caracteres especiais.",
       }),
-    perfil_id: z.number(),
   });
 
-  const registerDoctorBodySchema = registerBodySchema.extend({
-    nome: z.string({ message: "Nome é obrigatório" }),
-    sobrenome: z.string({ message: "Sobrenome é obrigatório" }),
-    telefone: z.string({ message: "Telefone é obrigatório" }),
-    especialidade: z.coerce.number(),
-  });
 
-  const { email, senha, perfil_id } = registerBodySchema.parse(request.body);
+  const { email, password } = registerBodySchema.parse(request.body);
 
   try {
-    const prismaPacientesRepository = new PrismaUsersRepository();
+    const prismaUsersRepository = new PrismaUsersRepository();
+    const prismaPatientsRepository = new PrismaPatientsRepository();
     const registerUseCase = new RegisterPatientUseCase(
-      prismaPacientesRepository
+      prismaUsersRepository,
+      prismaPatientsRepository
     );
 
-    await registerUseCase.execute({ email, senha, perfil_id });
+    await registerUseCase.execute({ email, password });
   } catch (error) {
     if (error instanceof UserAlreadyExistsError) {
       return reply.status(409).send({ message: error.message });

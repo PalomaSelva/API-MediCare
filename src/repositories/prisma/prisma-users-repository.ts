@@ -7,8 +7,8 @@ export class PrismaUsersRepository implements UsersRepository {
     const user = prisma.user.create({
       data: {
         email: data.email,
-        senha: data.senha,
-        perfil_id: data.perfil_id,
+        password: data.password,
+        profile_type: data.profile_type,
       },
     });
 
