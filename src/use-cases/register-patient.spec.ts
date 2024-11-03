@@ -33,30 +33,25 @@ describe("Register Use Case", () => {
       email: "teste@example.com",
       password: "12345",
     });
-
-    
-
-    const isPasswordCorrectlyHashed = await compare("12345", patient.);
+    const isPasswordCorrectlyHashed = await compare("12345", patient.password);
     expect(isPasswordCorrectlyHashed).toBe(true);
-    console.log(patient.);
-    console.log(isPasswordCorrectlyHashed);
   });
 
   it("Não deve ser possível cadastrar múltiplas contas com o mesmo e-mail", async () => {
     const usersRepository = new InMemoryUsersRepository();
-    const registerUseCase = new RegisterPatientUseCase(usersRepository);
-
-    await registerUseCase.execute({
+    const patientsRepository = new InMemoryPatientsRepository();
+    const registerUseCase = new RegisterPatientUseCase(
+      usersRepository,
+      patientsRepository
+    );
+    const { patient } = await registerUseCase.execute({
       email: "teste@example.com",
-      senha: "12345",
-      perfil_id: 1,
+      password: "12345",
     });
-
     await expect(() => {
       return registerUseCase.execute({
         email: "teste@example.com",
-        senha: "12345",
-        perfil_id: 1,
+        password: "12345",
       });
     }).rejects.toBeInstanceOf(UserAlreadyExistsError);
   });

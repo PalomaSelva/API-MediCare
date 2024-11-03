@@ -1,5 +1,5 @@
-import { Patient } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 
-export interface PatientsRepository{
-  create(userId:number):Promise<Patient>
+export interface PatientsRepository {
+  create(user: User): Promise<User>;
 }

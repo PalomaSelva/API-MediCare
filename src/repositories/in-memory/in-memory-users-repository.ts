@@ -6,7 +6,7 @@ export class InMemoryUsersRepository implements UsersRepository {
   public items: User[] = [];
   async create(data: Prisma.UserUncheckedCreateInput) {
     const user = {
-      id: Math.round(Math.random()),
+      id: Math.round(Math.random() * 10),
       name: data.name ?? null,
       email: data.email,
       password: data.password,
