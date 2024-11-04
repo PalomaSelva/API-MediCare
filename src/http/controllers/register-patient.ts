@@ -1,7 +1,5 @@
-import { PrismaPatientsRepository } from "@/repositories/prisma/prisma-patients-repository";
-import { PrismaUsersRepository } from "@/repositories/prisma/prisma-users-repository";
 import { UserAlreadyExistsError } from "@/use-cases/errors/user-already-exists";
-import { RegisterPatientUseCase } from "@/use-cases/register-patient";
+import { makeRegisterPatientUseCase } from "@/use-cases/factories/make-register-patient-use-case";
 
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
@@ -29,16 +27,10 @@ export async function registerPatient(
       }),
   });
 
-
   const { email, password } = registerBodySchema.parse(request.body);
 
   try {
-    const prismaUsersRepository = new PrismaUsersRepository();
-    const prismaPatientsRepository = new PrismaPatientsRepository();
-    const registerUseCase = new RegisterPatientUseCase(
-      prismaUsersRepository,
-      prismaPatientsRepository
-    );
+    const registerUseCase = makeRegisterPatientUseCase();
 
     await registerUseCase.execute({ email, password });
   } catch (error) {
