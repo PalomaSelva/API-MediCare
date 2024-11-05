@@ -2,10 +2,13 @@ import fastify from "fastify";
 import { env } from "process";
 import { ZodError } from "zod";
 import { appRoutes } from "./http/routes";
+import fastifyCors from "@fastify/cors";
 
 export const app = fastify();
 app.register(appRoutes);
-
+app.register(fastifyCors, {
+  origin: "*",
+});
 app.setErrorHandler((error, _request, reply) => {
   if (error instanceof ZodError) {
     return reply
