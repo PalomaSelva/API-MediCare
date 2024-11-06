@@ -1,4 +1,5 @@
 import { UserAlreadyExistsError } from "@/use-cases/errors/user-already-exists";
+import { makeRegisterClinicUseCase } from "@/use-cases/factories/make-register-clinic-use-case";
 import { makeRegisterDoctorUseCase } from "@/use-cases/factories/make-register-doctor-use-case";
 import { makeRegisterPatientUseCase } from "@/use-cases/factories/make-register-patient-use-case";
 
@@ -12,6 +13,7 @@ export async function registerClinic(
   const registerBodySchema = z.object({
     name: z.string(),
     email: z.string().email(),
+    phone: z.string(),
     address: z.object({
       zipCode: z.string().max(8),
       city: z.string(),
@@ -41,14 +43,14 @@ export async function registerClinic(
     }),
   });
 
-  const { name, email, address, admin } = registerBodySchema.parse(
+  const { name, email, address, phone, admin } = registerBodySchema.parse(
     request.body
   );
 
   try {
-    // const registerUseCase = makere();
+    const registerUseCase = makeRegisterClinicUseCase();
 
-    await registerUseCase.execute({ ...admin });
+    await registerUseCase.execute({ name, email, address, phone, admin });
   } catch (error) {
     if (error instanceof UserAlreadyExistsError) {
       return reply.status(409).send({ message: error.message });

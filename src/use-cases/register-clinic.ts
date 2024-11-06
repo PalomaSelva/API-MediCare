@@ -20,7 +20,13 @@ export interface RegisterClinicUseCaseRequest {
   email: string;
   phone: string;
   address: Prisma.AddressCreateWithoutUserInput;
-  admin: Prisma.UserUncheckedCreateInput;
+  admin: RegisterUserAdmin;
+}
+
+export interface RegisterUserAdmin {
+  email: string;
+  password: string;
+  name: string;
 }
 
 interface RegisterClinicUseCaseResponse {
@@ -43,18 +49,21 @@ export class RegisterClinicUseCase {
     const password_hash = await hash(admin.password, 6);
 
     const userWithSameEmail = await this.usersRepository.findByEmail(email);
+    const userAdmWithSameEmail = await this.usersRepository.findByEmail(
+      admin.email
+    );
 
-    if (userWithSameEmail) {
+    if (userWithSameEmail || userAdmWithSameEmail) {
       throw new UserAlreadyExistsError();
     }
 
     const userAdmin = await this.usersRepository.create({
-      email,
+      email: admin.email,
       password: password_hash,
       profile_type: "clinicAdmin",
-      name,
+      name: admin.name,
     });
-
+    console.log(userAdmin);
     const clinicData = {
       name,
       email,

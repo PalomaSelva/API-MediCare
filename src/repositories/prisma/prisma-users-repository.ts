@@ -13,6 +13,7 @@ export class PrismaUsersRepository implements UsersRepository {
         phone: data.phone ?? null,
       },
     });
+    console.log(user);
 
     return user;
   }
@@ -21,6 +22,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const user = prisma.user.findUnique({
       where: { email },
     });
+
     return user;
   }
 }

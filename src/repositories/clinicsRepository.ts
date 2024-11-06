@@ -5,5 +5,5 @@ export interface ClinicsRepository {
     user: User,
     clinic: Prisma.ClinicUncheckedCreateInput,
     Address: Prisma.AddressCreateWithoutUserInput
-  ): Promise<Clinic>;
+  ): Promise<any>;
 }
