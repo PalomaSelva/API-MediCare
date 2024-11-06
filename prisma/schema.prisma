@@ -33,30 +33,35 @@ model User {
 }
 
 model Doctor {
-  id                  Int               @id @default(autoincrement())
-  registration_number String?
-  photo_01            String?
-  photo_02            String?
-  photo_03            String?
-  video               String?
-  about_me            String?
+  id                         Int               @id @default(autoincrement())
+  registration_number        String?
+  photo_01                   String?
+  photo_02                   String?
+  photo_03                   String?
+  video                      String?
+  about_me                   String?
+  averageAppointmentDuration Int               @default(30)
   // Relationship with User
-  user                User              @relation(fields: [user_id], references: [id])
-  user_id             Int               @unique
-  Clinics             DoctorClinic[]
-  Specialties         SpecialtyDoctor[]
-  Education           Education[]
-  Experience          Experience[]
-  DoctorPlan          DoctorPlan[]
+  user                       User              @relation(fields: [user_id], references: [id])
+  user_id                    Int               @unique
+  Clinics                    DoctorClinic[]
+  Specialties                SpecialtyDoctor[]
+  Education                  Education[]
+  Experience                 Experience[]
+  DoctorPlan                 DoctorPlan[]
 }
 
 model Clinic {
-  id    Int     @id @default(autoincrement())
-  name  String
-  email String
-  phone String
-  cnpj  String?
-
+  id       Int     @id @default(autoincrement())
+  name     String
+  email    String
+  phone    String
+  cnpj     String?
+  photo_01 String?
+  photo_02 String?
+  photo_03 String?
+  video    String?
+  about_me String?
   // Relationship with User
 
   Doctors    DoctorClinic[]
