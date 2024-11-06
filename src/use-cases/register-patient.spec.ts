@@ -1,10 +1,10 @@
 import { beforeAll, beforeEach, describe, expect, it, test } from "vitest";
 
 import { compare, hash } from "bcryptjs";
-import { InMemoryUsersRepository } from "@/repositories/in-memory/in-memory-users-repository";
+import { InMemoryUsersRepository } from "../repositories/in-memory/in-memory-users-repository";
 import { UserAlreadyExistsError } from "./errors/user-already-exists";
 import { RegisterPatientUseCase } from "./register-patient";
-import { InMemoryPatientsRepository } from "@/repositories/in-memory/in-memory-patients-repository";
+import { InMemoryPatientsRepository } from "../repositories/in-memory/in-memory-patients-repository";
 
 let usersRepository: InMemoryUsersRepository;
 let patientsRepository: InMemoryPatientsRepository;

@@ -1,9 +1,9 @@
 import { hash } from "bcryptjs";
 
 import { Clinic, Prisma } from "@prisma/client";
-import { UsersRepository } from "@/repositories/usersRepository";
+import { UsersRepository } from "../repositories/usersRepository";
 import { UserAlreadyExistsError } from "./errors/user-already-exists";
-import { ClinicsRepository } from "@/repositories/clinicsRepository";
+import { ClinicsRepository } from "../repositories/clinicsRepository";
 
 export interface RegisterClinicUseCaseRequest {
   name: string;

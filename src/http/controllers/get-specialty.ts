@@ -1,4 +1,4 @@
-import { makeGetSpecialtyUseCase } from "@/use-cases/factories/make-specialty-use-case";
+import { makeGetSpecialtyUseCase } from "../../use-cases/factories/make-specialty-use-case";
 import { FastifyReply, FastifyRequest } from "fastify";
 
 export async function getSpecialty(

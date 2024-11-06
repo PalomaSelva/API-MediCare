@@ -1,5 +1,5 @@
-import { PrismaPatientsRepository } from "@/repositories/prisma/prisma-patients-repository";
-import { PrismaUsersRepository } from "@/repositories/prisma/prisma-users-repository";
+import { PrismaPatientsRepository } from "../../repositories/prisma/prisma-patients-repository";
+import { PrismaUsersRepository } from "../../repositories/prisma/prisma-users-repository";
 import { RegisterPatientUseCase } from "../register-patient";
 
 export function makeRegisterPatientUseCase() {

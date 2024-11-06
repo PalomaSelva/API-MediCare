@@ -1,4 +1,4 @@
-import { SpecialtyRepository } from "@/repositories/specialtyRepository";
+import { SpecialtyRepository } from "../repositories/specialtyRepository";
 import { Specialty } from "@prisma/client";
 
 interface GetSpecialtyUseCaseResponse {

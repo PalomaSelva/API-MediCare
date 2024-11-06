@@ -1,4 +1,4 @@
-import { app } from "@/app";
+import { app } from "../app";
 import { registerPatient } from "./controllers/register-patient";
 import { authenticate } from "./controllers/authenticate";
 import { registerDoctor } from "./controllers/register-doctor";

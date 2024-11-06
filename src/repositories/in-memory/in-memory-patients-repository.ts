@@ -18,6 +18,7 @@ export class InMemoryPatientsRepository implements PatientsRepository {
         phone: null,
         profile_pic: null,
         profile_type: "patient" as ProfileType,
+        clinic_id: user.clinic_id ?? null,
       },
     };
 

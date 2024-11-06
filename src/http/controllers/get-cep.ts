@@ -1,6 +1,6 @@
-import { DataResponseCep } from "@/interfaces/cep";
+import { DataResponseCep } from "../../interfaces/cep";
 import { FastifyRequest, FastifyReply } from "fastify";
-import fetch from "node-fetch";
+import axios from "axios"; // Importe o axios
 import { z } from "zod";
 
 export async function getCep(request: FastifyRequest, reply: FastifyReply) {
@@ -13,10 +13,11 @@ export async function getCep(request: FastifyRequest, reply: FastifyReply) {
   const { cep } = registerBodySchema.parse(request.params);
 
   try {
-    // Realiza a requisição HTTP para a API pública (ViaCEP)
-    const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    // Realiza a requisição HTTP para a API pública (ViaCEP) com Axios
+    const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
 
-    const data: DataResponseCep = (await response.json()) as DataResponseCep;
+    const data: DataResponseCep = response.data; // Axios já retorna os dados na propriedade `data`
+
     const dataReturn = {
       cep: data.cep,
       rua: data.logradouro,
@@ -26,8 +27,10 @@ export async function getCep(request: FastifyRequest, reply: FastifyReply) {
       uf: data.uf,
       estado: data.estado,
     };
+
     reply.status(200).send(dataReturn);
   } catch (error) {
+    // Verifique o tipo de erro e envie uma resposta mais precisa, se necessário
     reply.status(500).send({ error: "Erro ao buscar o CEP" });
   }
 }
