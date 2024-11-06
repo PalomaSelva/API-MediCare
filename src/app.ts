@@ -5,6 +5,7 @@ import { appRoutes } from "./http/routes";
 import fastifyCors from "@fastify/cors";
 
 export const app = fastify();
+app.register(require("fastify-axios"));
 app.register(appRoutes);
 app.register(fastifyCors, {
   origin: "*",
