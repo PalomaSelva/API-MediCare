@@ -82,8 +82,8 @@ model Address {
   number     String
   complement String?
 
-  user    User @relation(fields: [user_id], references: [id])
-  user_id Int  @unique
+  user    User? @relation(fields: [user_id], references: [id])
+  user_id Int?  @unique
 
   clinic    Clinic? @relation(fields: [clinic_id], references: [id])
   clinic_id Int?    @unique

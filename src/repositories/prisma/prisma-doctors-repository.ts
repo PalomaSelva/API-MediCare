@@ -41,6 +41,7 @@ export class PrismaDoctorsRepository implements DoctorsRepository {
         number: address.number,
         complement: address.complement,
         street: address.street,
+
         user: {
           connect: {
             id: user.id,

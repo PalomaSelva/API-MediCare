@@ -3,42 +3,45 @@ import { Prisma, User } from "@prisma/client";
 import { ClinicsRepository } from "../clinicsRepository";
 
 export class PrismaClinicsRepository implements ClinicsRepository {
-  async create(clinicData: Prisma.ClinicUncheckedCreateInput) {
-    // Cria o `Doctor` e associa ao `User` existente
+  async create(
+    userAdmin: User,
+    clinicData: Prisma.ClinicUncheckedCreateInput,
+    address: Prisma.AddressCreateWithoutUserInput
+  ) {
     const clinic = await prisma.clinic.create({
       data: {
-        name: "Clínica Exemplo",
-        email: "contato@clinica.com",
-        phone: "123456789",
-        cnpj: "12345678000199",
-        // Criando o usuário
+        ...clinicData,
+
         User: {
-          create: {
-            name: "Usuário Exemplo",
-            email: "usuario@clinica.com",
-            password: "senhaSegura",
-            profile_type: "clinicAdmin",
+          connect: {
+            id: userAdmin.id,
           },
         },
       },
     });
+    console.log(clinic);
 
-    // Cria o `Address` associado ao `User`
-    // await prisma.address.create({
-    //   data: {
-    //     zipCode: address.zipCode,
-    //     city: address.city,
-    //     state: address.state,
-    //     number: address.number,
-    //     complement: address.complement,
-    //     street: address.street,
-    //     user: {
-    //       connect: {
-    //         clinic: doctor.id,
-    //       },
-    //     },
-    //   },
-    // });
+    if (!address) return;
+    await prisma.address.create({
+      data: {
+        zipCode: address.zipCode,
+        city: address.city,
+        state: address.state,
+        number: address.number,
+        complement: address.complement,
+        street: address.street,
+        clinic: {
+          connect: {
+            id: clinic.id,
+          },
+        },
+        user: {
+          connect: {
+            id: userAdmin.id,
+          },
+        },
+      },
+    });
 
     return clinic;
   }

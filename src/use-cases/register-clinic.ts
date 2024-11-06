@@ -19,9 +19,8 @@ export interface RegisterClinicUseCaseRequest {
   name: string;
   email: string;
   phone: string;
-  password: string;
-  address: Prisma.AddressUncheckedCreateNestedOneWithoutClinicInput;
-  admin: Prisma.UserUncheckedCreateNestedManyWithoutClinicInput;
+  address: Prisma.AddressCreateWithoutUserInput;
+  admin: Prisma.UserUncheckedCreateInput;
 }
 
 interface RegisterClinicUseCaseResponse {
@@ -38,11 +37,10 @@ export class RegisterClinicUseCase {
     name,
     email,
     phone,
-    password,
     address,
     admin,
   }: RegisterClinicUseCaseRequest): Promise<RegisterClinicUseCaseResponse> {
-    const password_hash = await hash(password, 6);
+    const password_hash = await hash(admin.password, 6);
 
     const userWithSameEmail = await this.usersRepository.findByEmail(email);
 
@@ -50,13 +48,24 @@ export class RegisterClinicUseCase {
       throw new UserAlreadyExistsError();
     }
 
-    const clinic = await this.clinicRepository.create({
+    const userAdmin = await this.usersRepository.create({
       email,
+      password: password_hash,
+      profile_type: "clinicAdmin",
       name,
-      phone,
-      Address: address,
-      User: admin,
     });
+
+    const clinicData = {
+      name,
+      email,
+      phone,
+    };
+
+    const clinic = await this.clinicRepository.create(
+      userAdmin,
+      clinicData,
+      address
+    );
 
     return { clinic };
   }
