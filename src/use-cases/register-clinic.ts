@@ -1,18 +1,8 @@
-import { prisma } from "@/lib/prisma";
 import { hash } from "bcryptjs";
 
-import {
-  Address,
-  Clinic,
-  Doctor,
-  Prisma,
-  ProfileType,
-  User,
-} from "@prisma/client";
+import { Clinic, Prisma } from "@prisma/client";
 import { UsersRepository } from "@/repositories/usersRepository";
 import { UserAlreadyExistsError } from "./errors/user-already-exists";
-import { DoctorsRepository } from "@/repositories/doctorsRepository";
-import { RegisterDoctorUseCaseRequest } from "./register-doctor";
 import { ClinicsRepository } from "@/repositories/clinicsRepository";
 
 export interface RegisterClinicUseCaseRequest {

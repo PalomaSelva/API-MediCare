@@ -1,4 +1,4 @@
-import { Clinic, Doctor, Prisma, User } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 
 export interface ClinicsRepository {
   create(

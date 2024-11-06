@@ -1,6 +1,4 @@
-import { PrismaPatientsRepository } from "@/repositories/prisma/prisma-patients-repository";
 import { PrismaUsersRepository } from "@/repositories/prisma/prisma-users-repository";
-import { RegisterPatientUseCase } from "../register-patient";
 import { PrismaDoctorsRepository } from "@/repositories/prisma/prisma-doctors-repository";
 import { RegisterDoctorUseCase } from "../register-doctor";
 
