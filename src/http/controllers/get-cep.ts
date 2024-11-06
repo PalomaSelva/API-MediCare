@@ -1,4 +1,4 @@
-import { app } from "@/app";
+import { DataResponseCep } from "@/interfaces/cep";
 import { FastifyRequest, FastifyReply } from "fastify";
 import fetch from "node-fetch";
 import { z } from "zod";
@@ -16,8 +16,17 @@ export async function getCep(request: FastifyRequest, reply: FastifyReply) {
     // Realiza a requisição HTTP para a API pública (ViaCEP)
     const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
 
-    const data = await response.json();
-    reply.status(200).send(data);
+    const data: DataResponseCep = (await response.json()) as DataResponseCep;
+    const dataReturn = {
+      cep: data.cep,
+      rua: data.logradouro,
+      complemento: data.complemento,
+      bairro: data.bairro,
+      cidade: data.localidade,
+      uf: data.uf,
+      estado: data.estado,
+    };
+    reply.status(200).send(dataReturn);
   } catch (error) {
     reply.status(500).send({ error: "Erro ao buscar o CEP" });
   }
