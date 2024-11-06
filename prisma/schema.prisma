@@ -72,10 +72,11 @@ model Patient {
 model Address {
   id         Int     @id @default(autoincrement())
   zipCode    String // 'cep' em português
-  city       String // 'cidade' em português
-  state      String // 'estado' em português
-  number     String // 'numero' em português
-  complement String? // 'complemento' em português
+  city       String
+  state      String
+  street     String
+  number     String
+  complement String?
 
   user   User @relation(fields: [userId], references: [id])
   userId Int  @unique // Supondo que um usuário pode ter apenas um endereço

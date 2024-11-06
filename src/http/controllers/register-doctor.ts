@@ -29,9 +29,10 @@ export async function registerDoctor(
       }),
     specialty: z.coerce.number(),
     address: z.object({
-      zipCode: z.string(),
+      zipCode: z.string().max(8),
       city: z.string(),
       state: z.string(),
+      street: z.string(),
       number: z.string(),
       complement: z.string().optional(),
     }),
