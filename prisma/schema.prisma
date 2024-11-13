@@ -14,41 +14,99 @@ datasource db {
 }
 
 model User {
-  id           Int         @id @default(autoincrement())
-  name         String?
-  email        String      @unique
-  password     String
-  phone        String?
-  profile_pic  String?
-  profile_type ProfileType // Defines the type of user (doctor, clinic, patient)
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  phone      String?
+  ADMIN      Boolean  @default(false)
+  PACIENT    Boolean  @default(false)
+  DOCTOR     Boolean  @default(false)
+  ADMESTAB   Boolean  @default(false)
+  ADMUSERS   Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   // Specific relationships for each type of user
-  doctor      Doctor?
-  clinic      Clinic?       @relation(fields: [clinic_id], references: [id])
-  patient     Patient?
-  SocialMedia SocialMedia[]
-  Address     Address?
-  ClinicUser  ClinicUser[]
-  clinic_id   Int?
+  doctor  Doctor?
+  clinic  Clinic?  @relation(fields: [clinic_id], references: [id])
+  patient Patient?
+
+  ClinicUser ClinicUser[]
+  clinic_id  Int?
+}
+
+model Patient {
+  id            Int      @id @default(autoincrement())
+  name          String
+  profile_pic   String?
+  birthday_date DateTime @db.Date
+
+  zipCode           String // 'cep' em português
+  UF                String
+  city              String
+  state             String
+  street            String
+  number            String
+  complement        String?
+  reference_address String
+
+  whatsapp   String?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime? @db.Timestamptz(3)
+  // Relationship with User
+  sex        Sex       @relation(fields: [sex_id], references: [id])
+  sex_id     Int
+  user       User      @relation(fields: [user_id], references: [id])
+  user_id    Int       @unique
 }
 
 model Doctor {
-  id                         Int               @id @default(autoincrement())
-  registration_number        String?
-  photo_01                   String?
-  photo_02                   String?
-  photo_03                   String?
-  video                      String?
-  about_me                   String?
-  averageAppointmentDuration Int               @default(30)
+  id                  Int     @id @default(autoincrement())
+  name                String
+  profile_pic         String?
+  registration_number String?
+  about_me            String?
+
+  zipCode           String // 'cep' em português
+  UF                String
+  city              String
+  state             String
+  street            String
+  number            String
+  complement        String?
+  reference_address String
+
+  whatsapp  String?
+  facebook  String?
+  instagram String?
+  linkedin  String?
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime? @db.Timestamptz(3)
+
   // Relationship with User
-  user                       User              @relation(fields: [user_id], references: [id])
-  user_id                    Int               @unique
-  Clinics                    DoctorClinic[]
-  Specialties                SpecialtyDoctor[]
-  Education                  Education[]
-  Experience                 Experience[]
-  DoctorPlan                 DoctorPlan[]
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int  @unique
+  sex     Sex  @relation(fields: [sex_id], references: [id])
+  sex_id  Int
+
+  Clinics       DoctorClinic[]
+  Specialties   SpecialtyDoctor[]
+  Education     Education[]
+  Experience    Experience[]
+  DoctorPlan    DoctorPlan[]
+  Certificate   Certificate[]
+  DoctorDisease DoctorDisease[]
+}
+
+model Certificate {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  doctor    Doctor? @relation(fields: [doctor_id], references: [id])
+  doctor_id Int?
 }
 
 model Clinic {
@@ -67,31 +125,15 @@ model Clinic {
   Doctors    DoctorClinic[]
   ClinicUser ClinicUser[]
   User       User[]
-  Address    Address?
 }
 
-model Patient {
-  id Int @id @default(autoincrement())
+model DoctorDisease {
+  doctor     Doctor  @relation(fields: [doctor_id], references: [id])
+  doctor_id  Int
+  disease    Disease @relation(fields: [disease_id], references: [id])
+  disease_id Int
 
-  // Relationship with User
-  user    User @relation(fields: [user_id], references: [id])
-  user_id Int  @unique
-}
-
-model Address {
-  id         Int     @id @default(autoincrement())
-  zipCode    String // 'cep' em português
-  city       String
-  state      String
-  street     String
-  number     String
-  complement String?
-
-  user    User? @relation(fields: [user_id], references: [id])
-  user_id Int?  @unique
-
-  clinic    Clinic? @relation(fields: [clinic_id], references: [id])
-  clinic_id Int?    @unique
+  @@unique([doctor_id, disease_id])
 }
 
 model Specialty {
@@ -101,20 +143,13 @@ model Specialty {
   Diseases Disease[]
 }
 
-model SocialMedia {
-  id       Int             @id @default(autoincrement())
-  platform SocialMediaType
-  url      String
-  user     User            @relation(fields: [user_id], references: [id])
-  user_id  Int
-}
-
 model Disease {
-  id           Int       @id @default(autoincrement())
-  name         String    @unique
-  description  String?
-  specialty    Specialty @relation(fields: [specialty_id], references: [id])
-  specialty_id Int
+  id            Int             @id @default(autoincrement())
+  name          String          @unique
+  description   String?
+  specialty     Specialty       @relation(fields: [specialty_id], references: [id])
+  specialty_id  Int
+  DoctorDisease DoctorDisease[]
 }
 
 model Education {
@@ -180,21 +215,14 @@ model SpecialtyDoctor {
   doctor    Doctor @relation(fields: [doctor_id], references: [id])
   doctor_id Int
 
+  average_appointment_duration Int @default(30) //Tempo_Medio_consulta
+
   @@id([doctor_id, specialty_id]) // Ensures that the same association does not occur twice
 }
 
-// Enum for user type
-enum ProfileType {
-  doctor
-  clinic
-  patient
-  clinicAdmin
-}
-
-enum SocialMediaType {
-  whatsapp
-  facebook
-  linkedin
-  youtube
-  twitter
+model Sex {
+  id      Int       @id @default(autoincrement())
+  name    String
+  Patient Patient[]
+  Doctor  Doctor[]
 }
